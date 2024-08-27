@@ -1,0 +1,43 @@
+#此工作流使用未经GitHub认证的操作。
+#它们由第三方提供，并由
+#单独的服务条款、隐私政策和支持
+#documentation。
+#
+#此工作流文件需要在Bearer.com上的免费帐户才能管理调查结果、通知等。
+#请参阅https://docs.bearer.com/guides/bearer-cloud/
+姓名:持票人
+
+在……之上:
+推:
+分支机构:["主要" ]
+pull_request:
+    #下面的分支必须是上面分支的子集
+分支机构:["主要"]
+计划表:
+-克朗:'41 5 * * 0'
+
+权限:
+内容:读用于操作/签出以获取代码的#
+安全事件:写#for github/codeql-action/upload-sarif上传Sarif结果
+行动:读#github/codeql-action/upload-sarif仅要求私有存储库获取Action运行状态
+
+工作:
+持票人:
+run-on:ubuntu-最新
+步骤:
+      #签出项目来源
+-uses:操作/结帐@v4
+      #使用承载CLI扫描代码
+-姓名:运行报告
+身份标识:报告
+uses:bearer/bearer-action@828eeb928ce2f4a7ca5ed57fb8b59508cb8c79bc
+和……一起:
+API键:${{secrets.Bearer_TOKEN}}
+格式:萨里夫
+输出:results.sarif
+退出代码:0
+      #上传上一步生成的Sarif文件
+-姓名:上传Sarif文件
+uses:GitHub/codql-action/upload-sarif@v3
+和……一起:
+Sarif_file:results.sarif
